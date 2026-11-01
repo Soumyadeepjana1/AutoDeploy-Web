@@ -110,10 +110,10 @@ All design tokens live at the top of `style.css` in the `:root` block:
 
 ```css
 :root {
-    --blue: #2563eb;      /* primary blue        */
-    --violet: #7c3aed;    /* primary violet      */
-    --grad-primary: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-    --glass-bg: rgba(255, 255, 255, 0.62);  /* glass panels */
+    --blue: #1d4ed8;      /* corporate blue      */
+    --violet: #4338ca;    /* deep indigo         */
+    --grad-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 45%, #4338ca 100%);
+    --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.58) 48%, rgba(248, 250, 252, 0.66));  /* glossy glass panels */
     --radius-lg: 26px;    /* card corner radius  */
     /* ...shadows, fonts, spacing */
 }
