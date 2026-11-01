@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learnora is a premium online learning platform with expert-led courses in web development, data science, cloud computing, cybersecurity, UI/UX design and DevOps.">
+    <meta name="theme-color" content="#0a0f2c">
+    <title>Learnora — Online Learning Platform</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='74' text-anchor='middle' font-size='64' font-family='Arial, sans-serif' font-weight='700' fill='white'%3EL%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ============ SVG ICON SPRITE ============ -->
+    <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+        <symbol id="i-data" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+        <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 0 0 .4-8.98A6 6 0 0 0 6.1 9.2 4.5 4.5 0 0 0 6.5 19Z"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+        <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/></symbol>
+        <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+        <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+        <symbol id="i-infinity" viewBox="0 0 24 24"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4z"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" fill="currentColor" stroke="none"/></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3" fill="currentColor" stroke="none"/></symbol>
+        <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+        <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9 16.2 7.8"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+        <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9.5 6C7 6 5 8 5 10.5S7 15 9.5 15c.3 0 .7 0 1-.1-.4 1.7-2 3-4.5 3.6"/><path d="M20 6c-2.5 0-4.5 2-4.5 4.5S17 15 19.5 15c.3 0 .7 0 1-.1-.4 1.7-2 3-4.5 3.6"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></symbol>
+        <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></symbol>
+        <symbol id="i-youtube" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></symbol>
+        <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></symbol>
+    </svg>
+
+    <!-- ============ NAVIGATION ============ -->
+    <header class="navbar">
+        <nav class="nav container" aria-label="Main navigation">
+            <a href="#home" class="logo">
+                <span class="logo-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" class="logo-icon"><use href="#i-book"/></svg>
+                </span>
+                <span class="logo-text">Learnora</span>
+            </a>
+
+            <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+            <label for="nav-toggle" class="nav-burger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#courses" class="nav-link">Explore Courses</a></li>
+                <li><a href="#categories" class="nav-link">Categories</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="#" class="btn btn-ghost">Login</a>
+                <a href="#cta" class="btn btn-primary btn-sm">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ============ HERO ============ -->
+        <section class="hero" id="home">
+            <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
+            <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
+
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow">
+                        <span class="eyebrow-dot" aria-hidden="true"></span>
+                        #1 Online Learning Platform 2026
+                    </span>
+                    <h1 class="hero-title">Unlock Your Potential <span class="grad-text">Through Learning.</span></h1>
+                    <p class="hero-desc">Join over 120,000 learners mastering in-demand skills with expert-led courses, hands-on projects and professional certificates — anytime, anywhere.</p>
+
+                    <div class="hero-actions">
+                        <a href="#courses" class="btn btn-primary btn-lg">Explore Courses</a>
+                        <a href="#journey" class="btn btn-glass btn-lg">
+                            <span class="play-chip" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>
+                            Start Learning
+                        </a>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <strong>1,500+</strong>
+                            <span>Premium Courses</span>
+                        </div>
+                        <div class="stat">
+                            <strong>120K+</strong>
+                            <span>Active Learners</span>
+                        </div>
+                        <div class="stat">
+                            <strong>4.9&#9733;</strong>
+                            <span>Average Rating</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="player-card glass">
+                        <div class="player-top">
+                            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+                            <span class="player-url">learnora.com/classroom</span>
+                        </div>
+                        <div class="player-screen">
+                            <span class="player-play"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>
+                            <span class="player-live">LIVE</span>
+                        </div>
+                        <div class="player-body">
+                            <p class="player-lesson">Lesson 12 — React State &amp; Components</p>
+                            <div class="progress"><span class="progress-bar"></span></div>
+                            <div class="player-meta">
+                                <span>68% completed</span>
+                                <span>24 min left</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="float-card glass float-a">
+                        <span class="float-ic ic-violet"><svg viewBox="0 0 24 24"><use href="#i-award"/></svg></span>
+                        <div>
+                            <strong>Certificate Earned</strong>
+                            <span>Web Development</span>
+                        </div>
+                    </div>
+
+                    <div class="float-card glass float-b">
+                        <span class="float-ic ic-blue"><svg viewBox="0 0 24 24"><use href="#i-users"/></svg></span>
+                        <div>
+                            <strong>+2,418</strong>
+                            <span>Joined this week</span>
+                        </div>
+                    </div>
+
+                    <div class="float-card glass float-c">
+                        <span class="float-ic ic-amber"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                        <div>
+                            <strong>4.9 / 5.0</strong>
+                            <span>Course rating</span>
+                        </div>
+                    </div>
+
+                    <span class="hero-bubble bubble-1"></span>
+                    <span class="hero-bubble bubble-2"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CATEGORIES ============ -->
+        <section class="section" id="categories">
+            <div class="container">
+                <header class="section-head">
+                    <span class="tag">Categories</span>
+                    <h2 class="section-title">Explore Top <span class="grad-text">Categories</span></h2>
+                    <p class="section-sub">Hand-picked career paths designed with industry leaders to take you from beginner to job-ready.</p>
+                </header>
+
+                <div class="category-grid">
+                    <a href="#courses" class="category-card glass">
+                        <span class="cat-ic ic-blue"><svg viewBox="0 0 24 24"><use href="#i-code"/></svg></span>
+                        <h3>Web Development</h3>
+                        <p>320+ courses</p>
+                        <span class="cat-arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                    </a>
+                    <a href="#courses" class="category-card glass">
+                        <span class="cat-ic ic-violet"><svg viewBox="0 0 24 24"><use href="#i-data"/></svg></span>
+                        <h3>Data Science</h3>
+                        <p>210+ courses</p>
+                        <span class="cat-arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                    </a>
+                    <a href="#courses" class="category-card glass">
+                        <span class="cat-ic ic-sky"><svg viewBox="0 0 24 24"><use href="#i-cloud"/></svg></span>
+                        <h3>Cloud Computing</h3>
+                        <p>180+ courses</p>
+                        <span class="cat-arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                    </a>
+                    <a href="#courses" class="category-card glass">
+                        <span class="cat-ic ic-rose"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span>
+                        <h3>Cybersecurity</h3>
+                        <p>150+ courses</p>
+                        <span class="cat-arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                    </a>
+                    <a href="#courses" class="category-card glass">
+                        <span class="cat-ic ic-pink"><svg viewBox="0 0 24 24"><use href="#i-pen"/></svg></span>
+                        <h3>UI/UX Design</h3>
+                        <p>190+ courses</p>
+                        <span class="cat-arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                    </a>
+                    <a href="#courses" class="category-card glass">
+                        <span class="cat-ic ic-teal"><svg viewBox="0 0 24 24"><use href="#i-terminal"/></svg></span>
+                        <h3>DevOps Engineering</h3>
+                        <p>140+ courses</p>
+                        <span class="cat-arrow"><svg viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ POPULAR COURSES ============ -->
+        <section class="section section-alt" id="courses">
+            <div class="container">
+                <header class="section-head">
+                    <span class="tag">Popular Courses</span>
+                    <h2 class="section-title">Courses Loved by <span class="grad-text">Learners</span></h2>
+                    <p class="section-sub">Highest-rated programs this season, taught by instructors who build real products at top companies.</p>
+                </header>
+
+                <div class="course-grid">
+                    <article class="course-card glass">
+                        <div class="course-thumb thumb-1">
+                            <span class="course-badge">Bestseller</span>
+                            <span class="thumb-ic"><svg viewBox="0 0 24 24"><use href="#i-code"/></svg></span>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-cat">Web Development</span>
+                            <h3 class="course-title">The Complete Full-Stack Web Development Bootcamp</h3>
+                            <p class="course-instructor">Dr. Emily Carter</p>
+                            <div class="course-rating" aria-label="Rated 4.9 out of 5">
+                                <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                                <strong>4.9</strong><span class="muted">(12,480)</span>
+                            </div>
+                            <div class="course-info">
+                                <span><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg>48h</span>
+                                <span><svg viewBox="0 0 24 24"><use href="#i-users"/></svg>12,480</span>
+                            </div>
+                            <div class="course-foot">
+                                <span class="course-price">$89.99</span>
+                                <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="course-card glass">
+                        <div class="course-thumb thumb-2">
+                            <span class="course-badge badge-new">New</span>
+                            <span class="thumb-ic"><svg viewBox="0 0 24 24"><use href="#i-data"/></svg></span>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-cat">Data Science</span>
+                            <h3 class="course-title">Python for Data Science &amp; Machine Learning</h3>
+                            <p class="course-instructor">Marcus Chen, PhD</p>
+                            <div class="course-rating" aria-label="Rated 4.8 out of 5">
+                                <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                                <strong>4.8</strong><span class="muted">(9,210)</span>
+                            </div>
+                            <div class="course-info">
+                                <span><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg>36h</span>
+                                <span><svg viewBox="0 0 24 24"><use href="#i-users"/></svg>9,210</span>
+                            </div>
+                            <div class="course-foot">
+                                <span class="course-price">$79.99</span>
+                                <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="course-card glass">
+                        <div class="course-thumb thumb-3">
+                            <span class="course-badge">Popular</span>
+                            <span class="thumb-ic"><svg viewBox="0 0 24 24"><use href="#i-cloud"/></svg></span>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-cat">Cloud Computing</span>
+                            <h3 class="course-title">AWS Cloud Practitioner: Complete Cloud Mastery</h3>
+                            <p class="course-instructor">Sophia Ramirez</p>
+                            <div class="course-rating" aria-label="Rated 4.9 out of 5">
+                                <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                                <strong>4.9</strong><span class="muted">(7,640)</span>
+                            </div>
+                            <div class="course-info">
+                                <span><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg>28h</span>
+                                <span><svg viewBox="0 0 24 24"><use href="#i-users"/></svg>7,640</span>
+                            </div>
+                            <div class="course-foot">
+                                <span class="course-price">$69.99</span>
+                                <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="course-card glass">
+                        <div class="course-thumb thumb-4">
+                            <span class="course-badge badge-hot">Trending</span>
+                            <span class="thumb-ic"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-cat">Cybersecurity</span>
+                            <h3 class="course-title">Cybersecurity Essentials: From Zero to Hero</h3>
+                            <p class="course-instructor">David Okafor</p>
+                            <div class="course-rating" aria-label="Rated 4.7 out of 5">
+                                <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                                <strong>4.7</strong><span class="muted">(5,890)</span>
+                            </div>
+                            <div class="course-info">
+                                <span><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg>32h</span>
+                                <span><svg viewBox="0 0 24 24"><use href="#i-users"/></svg>5,890</span>
+                            </div>
+                            <div class="course-foot">
+                                <span class="course-price">$74.99</span>
+                                <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="course-card glass">
+                        <div class="course-thumb thumb-5">
+                            <span class="course-badge">Bestseller</span>
+                            <span class="thumb-ic"><svg viewBox="0 0 24 24"><use href="#i-pen"/></svg></span>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-cat">UI/UX Design</span>
+                            <h3 class="course-title">UI/UX Design Masterclass with Figma</h3>
+                            <p class="course-instructor">Aisha Kapoor</p>
+                            <div class="course-rating" aria-label="Rated 4.9 out of 5">
+                                <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                                <strong>4.9</strong><span class="muted">(10,320)</span>
+                            </div>
+                            <div class="course-info">
+                                <span><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg>24h</span>
+                                <span><svg viewBox="0 0 24 24"><use href="#i-users"/></svg>10,320</span>
+                            </div>
+                            <div class="course-foot">
+                                <span class="course-price">$59.99</span>
+                                <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="course-card glass">
+                        <div class="course-thumb thumb-6">
+                            <span class="course-badge badge-new">New</span>
+                            <span class="thumb-ic"><svg viewBox="0 0 24 24"><use href="#i-terminal"/></svg></span>
+                        </div>
+                        <div class="course-body">
+                            <span class="course-cat">DevOps Engineering</span>
+                            <h3 class="course-title">DevOps Engineering: CI/CD, Docker &amp; Kubernetes</h3>
+                            <p class="course-instructor">James Whitfield</p>
+                            <div class="course-rating" aria-label="Rated 4.8 out of 5">
+                                <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                                <strong>4.8</strong><span class="muted">(6,750)</span>
+                            </div>
+                            <div class="course-info">
+                                <span><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg>40h</span>
+                                <span><svg viewBox="0 0 24 24"><use href="#i-users"/></svg>6,750</span>
+                            </div>
+                            <div class="course-foot">
+                                <span class="course-price">$84.99</span>
+                                <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="section-more">
+                    <a href="#" class="btn btn-glass btn-lg">Browse All Courses <svg viewBox="0 0 24 24" class="btn-ic"><use href="#i-arrow"/></svg></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ WHY CHOOSE LEARNORA ============ -->
+        <section class="section" id="why">
+            <div class="container">
+                <header class="section-head">
+                    <span class="tag">Why Learnora</span>
+                    <h2 class="section-title">Why Choose <span class="grad-text">Learnora</span></h2>
+                    <p class="section-sub">Everything you need to grow — built around outcomes, not just video lectures.</p>
+                </header>
+
+                <div class="feature-grid">
+                    <article class="feature-card glass">
+                        <span class="feat-ic ic-violet"><svg viewBox="0 0 24 24"><use href="#i-users"/></svg></span>
+                        <h3>Expert Instructors</h3>
+                        <p>Learn from senior engineers and designers working at the world's leading technology companies.</p>
+                    </article>
+                    <article class="feature-card glass">
+                        <span class="feat-ic ic-blue"><svg viewBox="0 0 24 24"><use href="#i-layers"/></svg></span>
+                        <h3>Practical Learning</h3>
+                        <p>Build real projects in every course with guided labs, challenges and instant feedback.</p>
+                    </article>
+                    <article class="feature-card glass">
+                        <span class="feat-ic ic-teal"><svg viewBox="0 0 24 24"><use href="#i-infinity"/></svg></span>
+                        <h3>Lifetime Access</h3>
+                        <p>Once you enroll, the course is yours forever — including every future update and addition.</p>
+                    </article>
+                    <article class="feature-card glass">
+                        <span class="feat-ic ic-amber"><svg viewBox="0 0 24 24"><use href="#i-award"/></svg></span>
+                        <h3>Professional Certificates</h3>
+                        <p>Earn shareable certificates that verify your skills and stand out on your résumé.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ LEARNING JOURNEY ============ -->
+        <section class="section section-alt" id="journey">
+            <div class="container">
+                <header class="section-head">
+                    <span class="tag">How It Works</span>
+                    <h2 class="section-title">Your Learning <span class="grad-text">Journey</span></h2>
+                    <p class="section-sub">A proven four-step path that takes you from curious beginner to certified professional.</p>
+                </header>
+
+                <ol class="journey">
+                    <li class="journey-step">
+                        <span class="step-num">01</span>
+                        <span class="step-ic ic-blue"><svg viewBox="0 0 24 24"><use href="#i-compass"/></svg></span>
+                        <h3>Discover</h3>
+                        <p>Explore 1,500+ courses and find the learning path that matches your goals.</p>
+                    </li>
+                    <li class="journey-step">
+                        <span class="step-num">02</span>
+                        <span class="step-ic ic-violet"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg></span>
+                        <h3>Learn</h3>
+                        <p>Follow structured, video-based lessons taught by proven industry experts.</p>
+                    </li>
+                    <li class="journey-step">
+                        <span class="step-num">03</span>
+                        <span class="step-ic ic-teal"><svg viewBox="0 0 24 24"><use href="#i-terminal"/></svg></span>
+                        <h3>Practice</h3>
+                        <p>Reinforce knowledge with hands-on projects, quizzes and coding labs.</p>
+                    </li>
+                    <li class="journey-step">
+                        <span class="step-num">04</span>
+                        <span class="step-ic ic-amber"><svg viewBox="0 0 24 24"><use href="#i-award"/></svg></span>
+                        <h3>Achieve</h3>
+                        <p>Graduate with a professional certificate and a portfolio that gets noticed.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ============ TESTIMONIALS ============ -->
+        <section class="section" id="testimonials">
+            <div class="container">
+                <header class="section-head">
+                    <span class="tag">Testimonials</span>
+                    <h2 class="section-title">Loved by <span class="grad-text">Learners</span></h2>
+                    <p class="section-sub">Real stories from people who changed their careers with Learnora.</p>
+                </header>
+
+                <div class="testimonial-grid">
+                    <figure class="testimonial-card glass">
+                        <span class="quote-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-quote"/></svg></span>
+                        <blockquote>
+                            <p>The projects forced me to actually build things, not just watch videos. Three months after finishing the web track I landed my first developer job.</p>
+                        </blockquote>
+                        <div class="stars stars-sm" aria-label="Rated 5 out of 5"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></div>
+                        <figcaption class="reviewer">
+                            <span class="avatar av-1" aria-hidden="true">SR</span>
+                            <span class="reviewer-meta">
+                                <strong>Sarah Reynolds</strong>
+                                <span>Frontend Developer, Spotify</span>
+                            </span>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="testimonial-card glass featured">
+                        <span class="quote-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-quote"/></svg></span>
+                        <blockquote>
+                            <p>I went from spreadsheets to shipping machine learning models. The Data Science path is rigorous, practical and genuinely fun from day one.</p>
+                        </blockquote>
+                        <div class="stars stars-sm" aria-label="Rated 5 out of 5"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></div>
+                        <figcaption class="reviewer">
+                            <span class="avatar av-2" aria-hidden="true">AM</span>
+                            <span class="reviewer-meta">
+                                <strong>Arjun Mehta</strong>
+                                <span>Data Analyst, Deloitte</span>
+                            </span>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="testimonial-card glass">
+                        <span class="quote-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-quote"/></svg></span>
+                        <blockquote>
+                            <p>The instructors answer questions within hours and the lifetime access means I still revisit lessons whenever I need a refresher. Worth every cent.</p>
+                        </blockquote>
+                        <div class="stars stars-sm" aria-label="Rated 5 out of 5"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></div>
+                        <figcaption class="reviewer">
+                            <span class="avatar av-3" aria-hidden="true">LO</span>
+                            <span class="reviewer-meta">
+                                <strong>Lena Osei</strong>
+                                <span>Cloud Engineer, Azure</span>
+                            </span>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CALL TO ACTION ============ -->
+        <section class="section cta-wrap" id="cta">
+            <div class="container">
+                <div class="cta glass-strong">
+                    <span class="cta-bubble cta-bubble-1" aria-hidden="true"></span>
+                    <span class="cta-bubble cta-bubble-2" aria-hidden="true"></span>
+                    <div class="cta-inner">
+                        <h2 class="cta-title">Start Your Learning Journey Today.</h2>
+                        <p class="cta-sub">Create a free account and get instant access to 50+ free courses, weekly career advice and your first certificate on us.</p>
+                        <div class="cta-actions">
+                            <a href="#" class="btn btn-white btn-lg">Get Started — It's Free</a>
+                            <a href="#courses" class="btn btn-outline-white btn-lg">Explore Courses</a>
+                        </div>
+                        <p class="cta-note"><svg viewBox="0 0 24 24" class="cta-check"><use href="#i-check"/></svg> No credit card required &nbsp;·&nbsp; Cancel anytime</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer" id="about">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="#home" class="logo">
+                    <span class="logo-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" class="logo-icon"><use href="#i-book"/></svg>
+                    </span>
+                    <span class="logo-text">Learnora</span>
+                </a>
+                <p>Premium online education that helps curious people build skills, earn certificates and grow careers they love.</p>
+                <div class="socials">
+                    <a href="#" class="social" aria-label="X (Twitter)"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></a>
+                    <a href="#" class="social" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><use href="#i-linkedin"/></svg></a>
+                    <a href="#" class="social" aria-label="YouTube"><svg viewBox="0 0 24 24"><use href="#i-youtube"/></svg></a>
+                    <a href="#" class="social" aria-label="Instagram"><svg viewBox="0 0 24 24"><use href="#i-instagram"/></svg></a>
+                </div>
+            </div>
+
+            <nav class="footer-col" aria-label="Quick links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#courses">Explore Courses</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#why">Why Learnora</a></li>
+                    <li><a href="#about">About Us</a></li>
+                </ul>
+            </nav>
+
+            <nav class="footer-col" aria-label="Course categories">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="#courses">Web Development</a></li>
+                    <li><a href="#courses">Data Science</a></li>
+                    <li><a href="#courses">Cloud Computing</a></li>
+                    <li><a href="#courses">Cybersecurity</a></li>
+                    <li><a href="#courses">UI/UX Design</a></li>
+                    <li><a href="#courses">DevOps Engineering</a></li>
+                </ul>
+            </nav>
+
+            <div class="footer-col">
+                <h3>Stay in the loop</h3>
+                <p class="footer-note">Get new courses and learning tips in your inbox every week.</p>
+                <form class="newsletter" action="#" method="post">
+                    <label for="newsletter-email" class="sr-only">Email address</label>
+                    <input id="newsletter-email" type="email" name="email" placeholder="you@example.com" required>
+                    <button type="submit" class="btn btn-primary btn-sm">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="container footer-bottom">
+            <p>© 2026 Learnora. All rights reserved.</p>
+            <ul class="footer-legal">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookies</a></li>
+            </ul>
+        </div>
+    </footer>
+
+</body>
+</html>
