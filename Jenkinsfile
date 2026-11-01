@@ -1,141 +1,202 @@
-// ============================================================
-//  AutoDeploy-Web — Learnora Website CI/CD Pipeline
-//  Flow: Git Push -> Jenkins build -> Docker Hub -> GitOps -> Argo CD -> Kubernetes
-// ============================================================
 
 pipeline {
     agent any
 
-    // Build options — timeout, no parallel builds, keep old logs limited
     options {
         timeout(time: 20, unit: 'MINUTES')
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
-    // Environment variables (no secrets here — creds come from Jenkins Credential Store)
     environment {
-        DOCKERHUB_USER    = 'soumyadeep7872'                                          // <-- CHANGE if needed
-        IMAGE_NAME        = 'autodeploy-web'                                          // Docker Hub image name
-        DOCKERHUB_CRED_ID = 'dockerhub-credentials'                                   // Jenkins credential ID for Docker Hub
-        GITOPS_REPO       = 'https://github.com/soumyadeep7872/autodeploy-web-gitops.git' // <-- CHANGE to your GitOps repo URL
-        GITOPS_CRED_ID    = 'github-gitops-credentials'                               // Jenkins credential ID for GitOps repo
-        DEPLOY_FILE       = 'deployment.yaml'                                         // file to update inside GitOps repo
+        // Docker Hub
+        DOCKERHUB_USER    = 'soumyadeep7872'
+        IMAGE_NAME        = 'autodeploy-web'
+        DOCKERHUB_CRED_ID = 'dockerhub-credentials'
+
+        // GitHub GitOps Repository
+        GITOPS_REPO       = 'https://github.com/soumyadeepjana1/autodeploy-web-gitops.git'
+        GITOPS_CRED_ID    = 'github-gitops-credentials'
+        GITOPS_BRANCH     = 'master'
+
+        DEPLOY_FILE       = 'deployment.yaml'
     }
 
     stages {
 
-        // ---- Stage 1: Checkout application code (index.html, style.css, Dockerfile) ----
+        // 1. Checkout Application Repository
         stage('Checkout App') {
             steps {
                 checkout scm
             }
         }
 
-        // ---- Stage 2: Generate a unique image tag from the Git commit SHA ----
+        // 2. Generate Docker Image Tag
         stage('Set Image Tag') {
             steps {
                 script {
-                    // short commit SHA (first 7 chars) — e.g. a1b2c3d
-                    env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    env.FULL_IMAGE = "${DOCKERHUB_USER}/${IMAGE_NAME}:${env.GIT_SHA}"
+                    env.GIT_SHA = sh(
+                        script: 'git rev-parse --short=12 HEAD',
+                        returnStdout: true
+                    ).trim()
+
+                    env.FULL_IMAGE =
+                        "${DOCKERHUB_USER}/${IMAGE_NAME}:${env.GIT_SHA}"
                 }
-                echo "Image tag for this build: ${env.FULL_IMAGE}"
+
+                echo "Docker Image: ${env.FULL_IMAGE}"
             }
         }
 
-        // ---- Stage 3: Basic validation of HTML and CSS files ----
+        // 3. Validate Website Files
         stage('Validate Files') {
             steps {
                 sh '''
-                    echo "==> Checking required files exist..."
-                    test -f index.html || (echo "index.html MISSING" && exit 1)
-                    test -f style.css  || (echo "style.css MISSING"  && exit 1)
-                    echo "==> index.html size: $(wc -c < index.html) bytes"
-                    echo "==> style.css  size: $(wc -c < style.css)  bytes"
-                    echo "==> Validation OK"
+                    set -eu
+
+                    test -f index.html
+                    test -f style.css
+                    test -f Dockerfile
+
+                    echo "Website files validation successful!"
                 '''
             }
         }
 
-        // ---- Stage 4: Build Docker image using the commit SHA tag ----
+        // 4. Build Docker Image
         stage('Docker Build') {
             steps {
-                sh "docker build -t ${env.FULL_IMAGE} ."
+                sh '''
+                    set -eu
+                    docker build -t "$FULL_IMAGE" .
+                '''
             }
         }
 
-        // ---- Stage 5: Login to Docker Hub and push the image ----
+        // 5. Push Image to Docker Hub
         stage('Push to Docker Hub') {
             steps {
-                // Credentials are injected at runtime — never stored in code
-                withCredentials([usernamePassword(
-                    credentialsId: env.DOCKERHUB_CRED_ID,
-                    usernameVariable: 'DH_USER',
-                    passwordVariable: 'DH_PASS'
-                )]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: "${DOCKERHUB_CRED_ID}",
+                        usernameVariable: 'DH_USER',
+                        passwordVariable: 'DH_PASS'
+                    )
+                ]) {
                     sh '''
-                        echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
+                        set -eu
+
+                        export DOCKER_CONFIG="$(mktemp -d)"
+
+                        cleanup() {
+                            docker logout >/dev/null 2>&1 || true
+                            rm -rf "$DOCKER_CONFIG"
+                        }
+
+                        trap cleanup EXIT
+
+                        echo "$DH_PASS" | docker login \
+                            -u "$DH_USER" --password-stdin
+
                         docker push "$FULL_IMAGE"
-                        docker logout
                     '''
                 }
             }
         }
 
-        // ---- Stage 6: Checkout GitOps repo and update image tag in deployment.yaml ----
+        // 6. Update GitOps Repository
         stage('Update GitOps Repo') {
             steps {
                 dir('gitops') {
-                    // Clone the GitOps repo with credentials
-                    checkout([$class: 'GitSCM',
-                        branches: [[name: '*/main']],
+
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "*/${GITOPS_BRANCH}"]],
                         userRemoteConfigs: [[
-                            url: env.GITOPS_REPO,
-                            credentialsId: env.GITOPS_CRED_ID
+                            url: "${GITOPS_REPO}",
+                            credentialsId: "${GITOPS_CRED_ID}"
                         ]]
                     ])
 
-                    // Replace the image tag in deployment.yaml with the new commit SHA tag
                     sh '''
-                        echo "==> Updating ${DEPLOY_FILE} with image: ${FULL_IMAGE}"
-                        sed -i "s|image: .*autodeploy-web:.*|image: ${FULL_IMAGE}|g" ${DEPLOY_FILE}
-                        echo "==> Current image line:"
-                        grep "image:" ${DEPLOY_FILE}
-                    '''
+                        set -eu
 
-                    // Commit & push ONLY if there is an actual change (no unnecessary commits)
-                    sh '''
-                        git config user.name  "Jenkins CI"
+                        echo "Checking deployment.yaml..."
+
+                        test -f "$DEPLOY_FILE"
+
+                        grep -q '^[[:space:]]*image:' "$DEPLOY_FILE" || {
+                            echo "ERROR: Image field not found!"
+                            exit 1
+                        }
+
+                        echo "Updating Docker image..."
+
+                        # Preserve existing YAML indentation
+                        sed -i -E \
+                          "s|^([[:space:]]*)image:.*$|\\1image: ${FULL_IMAGE}|" \
+                          "$DEPLOY_FILE"
+
+                        # Verify image update
+                        if ! grep -Fq "image: ${FULL_IMAGE}" "$DEPLOY_FILE"; then
+                            echo "ERROR: Docker image update failed!"
+                            exit 1
+                        fi
+
+                        echo "Updated image:"
+                        grep -F "image: ${FULL_IMAGE}" "$DEPLOY_FILE"
+
+                        # Configure Git
+                        git config user.name "Jenkins CI"
                         git config user.email "jenkins@autodeploy.local"
-                        git add ${DEPLOY_FILE}
+
+                        git add "$DEPLOY_FILE"
+
+                        # Commit only when changes exist
                         if git diff --cached --quiet; then
-                            echo "==> No change in image tag. Skipping commit."
+                            echo "No changes detected. Skipping commit."
                         else
-                            echo "==> Committing new image tag ${FULL_IMAGE}"
-                            git commit -m "deploy: update autodeploy-web image to ${FULL_IMAGE}"
-                            git push origin main
+                            git commit -m "deploy: update Learnora image ${GIT_SHA}"
+
+                            git push origin HEAD:${GITOPS_BRANCH}
                         fi
                     '''
                 }
             }
         }
-
-        // NOTE: Jenkins does NOT deploy to Kubernetes.
-        // Argo CD watches this GitOps repo and auto-syncs the new image. That's it!
     }
 
-    // ---- Post-build actions: always run, plus success/failure handling ----
+    // 7. Post Build Actions
     post {
+
         always {
-            // Clean up local image to save disk space on the Jenkins agent
-            sh "docker rmi ${env.FULL_IMAGE} || true"
+            script {
+                if (env.FULL_IMAGE?.trim()) {
+                    sh "docker rmi '${env.FULL_IMAGE}' || true"
+                }
+            }
         }
+
         success {
-            echo "✅ Build SUCCESS — image ${env.FULL_IMAGE} pushed. Argo CD will sync shortly."
+            echo """
+            =====================================
+            LEANORA CI/CD PIPELINE SUCCESS!
+            =====================================
+            Docker Image: ${env.FULL_IMAGE}
+            GitOps Branch: ${env.GITOPS_BRANCH}
+            Argo CD will sync the changes.
+            =====================================
+            """
         }
+
         failure {
-            echo "❌ Build FAILED — check the stage logs above. GitOps repo was NOT changed on failure."
+            echo """
+            =====================================
+            PIPELINE FAILED!
+            Check Jenkins Console Output.
+            ===================================== ......
+            
+            """
         }
     }
 }
