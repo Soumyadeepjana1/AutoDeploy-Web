@@ -194,7 +194,7 @@ EOF
             =====================================
                PIPELINE SUCCESSFUL!
                Docker Image pushed.
-               GitOps repository updated...
+               GitOps repository updated.....
             =====================================
             '''
         }
