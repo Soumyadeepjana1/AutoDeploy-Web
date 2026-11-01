@@ -203,7 +203,7 @@ EOF
             echo '''
             =====================================
                PIPELINE FAILED!
-               Check Jenkins Console Output.
+               Check Jenkins Console Output..
             =====================================
             '''
         }
