@@ -6,6 +6,7 @@ pipeline {
         timeout(time: 20, unit: 'MINUTES')
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
+        skipDefaultCheckout(true)
     }
 
     environment {
@@ -14,12 +15,13 @@ pipeline {
         IMAGE_NAME        = 'autodeploy-web'
         DOCKERHUB_CRED_ID = 'dockerhub-credentials'
 
-        // GitHub GitOps Repository
-        GITOPS_REPO       = 'https://github.com/soumyadeepjana1/autodeploy-web-gitops.git'
+        // GitOps Repository
+        GITOPS_REPO       = 'https://github.com/Soumyadeepjana1/autodeploy-web-gitops.git'
         GITOPS_CRED_ID    = 'github-gitops-credentials'
         GITOPS_BRANCH     = 'master'
 
-        DEPLOY_FILE       = 'deployment.yaml'
+        // IMPORTANT: Actual filename in GitHub
+        DEPLOY_FILE       = 'deployment.yml'
     }
 
     stages {
@@ -48,7 +50,7 @@ pipeline {
             }
         }
 
-        // 3. Validate Website Files
+        // 3. Validate Application Files
         stage('Validate Files') {
             steps {
                 sh '''
@@ -99,6 +101,8 @@ pipeline {
                             -u "$DH_USER" --password-stdin
 
                         docker push "$FULL_IMAGE"
+
+                        echo "Docker image pushed successfully!"
                     '''
                 }
             }
@@ -109,6 +113,7 @@ pipeline {
             steps {
                 dir('gitops') {
 
+                    // Checkout GitOps Repository
                     checkout([
                         $class: 'GitSCM',
                         branches: [[name: "*/${GITOPS_BRANCH}"]],
@@ -118,49 +123,98 @@ pipeline {
                         ]]
                     ])
 
+                    // Update deployment.yml
                     sh '''
                         set -eu
 
-                        echo "Checking deployment.yaml..."
+                        echo "================================"
+                        echo "Checking GitOps Repository"
+                        echo "================================"
 
-                        test -f "$DEPLOY_FILE"
+                        pwd
+                        ls -la
 
-                        grep -q '^[[:space:]]*image:' "$DEPLOY_FILE" || {
+                        test -f "$DEPLOY_FILE" || {
+                            echo "ERROR: deployment.yml not found!"
+                            exit 1
+                        }
+
+                        echo "Deployment file found!"
+
+                        grep -qE '^[[:space:]]*image:[[:space:]]*' "$DEPLOY_FILE" || {
                             echo "ERROR: Image field not found!"
                             exit 1
                         }
 
+                        echo "Old Docker image:"
+                        grep -E '^[[:space:]]*image:' "$DEPLOY_FILE"
+
                         echo "Updating Docker image..."
 
-                        # Preserve existing YAML indentation
                         sed -i -E \
-                          "s|^([[:space:]]*)image:.*$|\\1image: ${FULL_IMAGE}|" \
+                          "s|^([[:space:]]*image:[[:space:]]*).*$|\\1${FULL_IMAGE}|" \
                           "$DEPLOY_FILE"
 
-                        # Verify image update
-                        if ! grep -Fq "image: ${FULL_IMAGE}" "$DEPLOY_FILE"; then
-                            echo "ERROR: Docker image update failed!"
-                            exit 1
-                        fi
+                        echo "Verifying updated image..."
 
-                        echo "Updated image:"
+                        grep -Fq "image: ${FULL_IMAGE}" "$DEPLOY_FILE" || {
+                            echo "ERROR: Image update failed!"
+                            exit 1
+                        }
+
+                        echo "New Docker image:"
                         grep -F "image: ${FULL_IMAGE}" "$DEPLOY_FILE"
 
-                        # Configure Git
-                        git config user.name "Jenkins CI"
-                        git config user.email "jenkins@autodeploy.local"
+                        // This line is handled by shell below
+                    '''
 
-                        git add "$DEPLOY_FILE"
+                    // Configure Git and push using Jenkins credentials
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: "${GITOPS_CRED_ID}",
+                            usernameVariable: 'GH_USER',
+                            passwordVariable: 'GH_TOKEN'
+                        )
+                    ]) {
+                        sh '''
+                            set -eu
+                            set +x
 
-                        # Commit only when changes exist
-                        if git diff --cached --quiet; then
-                            echo "No changes detected. Skipping commit."
-                        else
+                            git config user.name "Jenkins CI"
+                            git config user.email "jenkins@autodeploy.local"
+
+                            git add "$DEPLOY_FILE"
+
+                            if git diff --cached --quiet; then
+                                echo "No changes detected."
+                                exit 0
+                            fi
+
                             git commit -m "deploy: update Learnora image ${GIT_SHA}"
 
-                            git push origin HEAD:${GITOPS_BRANCH}
-                        fi
-                    '''
+                            echo "Pushing changes to GitHub..."
+
+                            ASKPASS="$(mktemp)"
+                            trap 'rm -f "$ASKPASS"' EXIT
+
+                            cat > "$ASKPASS" <<'EOF'
+#!/bin/sh
+case "$1" in
+    *Username*) printf '%s\\n' "$GH_USER" ;;
+    *Password*) printf '%s\\n' "$GH_TOKEN" ;;
+esac
+EOF
+
+                            chmod 700 "$ASKPASS"
+
+                            export GIT_ASKPASS="$ASKPASS"
+                            export GIT_TERMINAL_PROMPT=0
+
+                            git push origin "HEAD:${GITOPS_BRANCH}"
+
+                            echo "GitOps repository updated successfully!"
+                        '''
+                    }
                 }
             }
         }
@@ -183,7 +237,10 @@ pipeline {
             LEANORA CI/CD PIPELINE SUCCESS!
             =====================================
             Docker Image: ${env.FULL_IMAGE}
+            GitOps Repository: ${env.GITOPS_REPO}
             GitOps Branch: ${env.GITOPS_BRANCH}
+            Deployment File: ${env.DEPLOY_FILE}
+
             Argo CD will sync the changes.
             =====================================
             """
@@ -194,8 +251,7 @@ pipeline {
             =====================================
             PIPELINE FAILED!
             Check Jenkins Console Output.
-            ===================================== ......
-            
+            =====================================
             """
         }
     }
